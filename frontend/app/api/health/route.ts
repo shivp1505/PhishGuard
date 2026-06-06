@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 
+export const maxDuration = 60;
+
 const internalApiUrl = process.env.INTERNAL_API_URL ?? "http://localhost:5000";
-const backendTimeoutMs = 5000;
+const backendTimeoutMs = 55000;
 
 async function fetchBackendHealth() {
   const controller = new AbortController();
@@ -38,21 +40,26 @@ export async function GET() {
       lastUpdated: data.lastUpdated ?? "unknown",
       metrics: data.metrics ?? null
     });
-  } catch {
+  } catch (caught) {
+    const isTimeout = caught instanceof Error && caught.name === "AbortError";
+
     return NextResponse.json(
       {
         online: false,
-        status: "offline",
+        status: isTimeout ? "waking" : "offline",
         service: "phishguard-backend",
         version: "unknown",
-        engine: "offline",
-        releaseStage: "offline",
+        engine: isTimeout ? "warming" : "offline",
+        releaseStage: isTimeout ? "waking" : "offline",
         rulesetVersion: "unknown",
         uiBuild: "v1-local",
         lastUpdated: "unknown",
-        metrics: null
+        metrics: null,
+        message: isTimeout
+          ? "The backend is still waking up. Render free-tier services can take around 50 seconds after inactivity."
+          : "The backend health check could not reach the analysis server."
       },
-      { status: 503 }
+      { status: isTimeout ? 202 : 503 }
     );
   }
 }

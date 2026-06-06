@@ -27,6 +27,7 @@ type HealthState = {
   rulesetVersion: string;
   uiBuild: string;
   lastUpdated: string;
+  message?: string;
   metrics: {
     keywordRules: number;
     trustedDomains: number;
@@ -64,6 +65,23 @@ function useHealth() {
     let active = true;
 
     async function check() {
+      const warmingTimer = window.setTimeout(() => {
+        if (!active) return;
+        setHealth((current) =>
+          current.online
+            ? current
+            : {
+                ...current,
+                online: false,
+                status: "waking",
+                engine: current.engine === "checking" ? "warming" : current.engine,
+                releaseStage: current.releaseStage === "checking" ? "waking" : current.releaseStage,
+                message: "Waking the analysis server...",
+                checkedAt: new Date().toISOString()
+              }
+        );
+      }, 2500);
+
       try {
         const response = await fetch("/api/health", { cache: "no-store" });
         const data = await response.json();
@@ -79,6 +97,7 @@ function useHealth() {
           uiBuild: data.uiBuild ?? "v1-local",
           lastUpdated: data.lastUpdated ?? "unknown",
           metrics: data.metrics ?? null,
+          message: data.message,
           checkedAt: new Date().toISOString()
         });
       } catch {
@@ -94,9 +113,12 @@ function useHealth() {
             uiBuild: "v1-local",
             lastUpdated: "unknown",
             metrics: null,
+            message: "The analysis server could not be reached.",
             checkedAt: new Date().toISOString()
           });
         }
+      } finally {
+        window.clearTimeout(warmingTimer);
       }
     }
 
@@ -135,7 +157,11 @@ export function CommandSidebar({
   const health = useHealth();
   const pathname = usePathname();
   const [activeHref, setActiveHref] = useState("#top");
-  const statusTone = health.online ? "green" : health.status === "checking" ? "amber" : "red";
+  const isWaking = health.status === "waking";
+  const statusTone = health.online ? "green" : health.status === "checking" || isWaking ? "amber" : "red";
+  const displayStatus = health.online ? "Operational" : isWaking ? "Waking" : health.status === "checking" ? "Checking" : "Offline";
+  const displayServer = health.online ? "Online" : isWaking ? "Waking up" : health.status === "checking" ? "Checking" : "Offline";
+  const statusTextClassName = health.online ? "text-[#7CFF62]" : health.status === "checking" || isWaking ? "text-[#F59E0B]" : "text-red-300";
   const sidebarWidth = collapsed ? "lg:w-[86px]" : "lg:w-[260px]";
   const formattedLastScan = lastScanAt
     ? new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(lastScanAt))
@@ -275,18 +301,23 @@ export function CommandSidebar({
               <dl className="mt-4 grid gap-3 text-xs">
                 <div className="flex items-center justify-between gap-3">
                   <dt className="text-[#A8B3AD]">Overall Status</dt>
-                  <dd className="flex items-center gap-2 text-[#7CFF62]">
+                  <dd className={`flex items-center gap-2 ${statusTextClassName}`}>
                     <StatusDot tone={statusTone} />
-                    {health.online ? "Operational" : health.status === "checking" ? "Checking" : "Offline"}
+                    {displayStatus}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <dt className="text-[#A8B3AD]">Analysis Server</dt>
                   <dd className="flex items-center gap-2 text-[#A8B3AD]">
                     <StatusDot tone={statusTone} />
-                    {health.online ? "Online" : "Offline"}
+                    {displayServer}
                   </dd>
                 </div>
+                {health.message && (
+                  <div className="rounded-md border border-[#F59E0B]/20 bg-[#F59E0B]/10 px-3 py-2 text-[#F8D58A]">
+                    {health.message}
+                  </div>
+                )}
                 <div className="flex items-center justify-between gap-3">
                   <dt className="text-[#A8B3AD]">Scanner Engine</dt>
                   <dd className="font-mono text-[#F4F7F5]">{health.engine}</dd>

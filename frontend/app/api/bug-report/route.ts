@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 60;
+
 const internalApiUrl = process.env.INTERNAL_API_URL ?? "http://localhost:5000";
-const backendTimeoutMs = 10000;
+const backendTimeoutMs = 55000;
 const forwardedHeaders = [
   "Retry-After",
   "X-RateLimit-Limit",
@@ -73,13 +75,17 @@ export async function POST(request: NextRequest) {
       headers: buildBackendHeaders(request),
       body: JSON.stringify(body)
     });
-  } catch {
+  } catch (caught) {
+    const isTimeout = caught instanceof Error && caught.name === "AbortError";
     return NextResponse.json(
       {
         success: false,
-        message: "PhishGuard cannot reach the bug report service. Please try again later."
+        status: isTimeout ? "waking" : "offline",
+        message: isTimeout
+          ? "The bug report service is still waking up. Please wait a moment and try again."
+          : "PhishGuard cannot reach the bug report service. Please try again later."
       },
-      { status: 503 }
+      { status: isTimeout ? 202 : 503 }
     );
   }
 
