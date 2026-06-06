@@ -4,6 +4,8 @@ import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "
 import { AlertTriangle, Bug, Check, Clipboard, FileText, Link2, Mail, ShieldCheck, X } from "lucide-react";
 
 const bugReportEmail = process.env.NEXT_PUBLIC_BUG_REPORT_EMAIL ?? "bugs@shivpatel.net";
+const bugReportIssueUrl =
+  process.env.NEXT_PUBLIC_BUG_REPORT_ISSUE_URL ?? "https://github.com/shivp1505/PhishGuard/issues/new";
 
 const helpItems = [
   {
@@ -220,9 +222,9 @@ function BugReportModal({ open, onClose }: { open: boolean; onClose: () => void 
 
   function submitBugReport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const subject = encodeURIComponent(`PhishGuard bug: ${bugSummary || "Website issue"}`);
+    const title = encodeURIComponent(`Bug: ${bugSummary || "Website issue"}`);
     const body = encodeURIComponent(bugReportBody);
-    window.location.href = `mailto:${bugReportEmail}?subject=${subject}&body=${body}`;
+    window.open(`${bugReportIssueUrl}?title=${title}&body=${body}`, "_blank", "noopener,noreferrer");
   }
 
   async function copyBugReport() {
@@ -293,15 +295,16 @@ function BugReportModal({ open, onClose }: { open: boolean; onClose: () => void 
                   />
                 </label>
                 <p className="text-xs leading-5 text-[#A8B3AD]">
-                  Reports are prepared for <span className="font-mono text-[#D7DDD9]">{bugReportEmail}</span>. After deployment, this can be replaced with GitHub Issues, Formspree, or a backend email endpoint.
+                  Reports open as a GitHub Issue so they can be tracked publicly. You can also copy the report and email it to{" "}
+                  <span className="font-mono text-[#D7DDD9]">{bugReportEmail}</span>.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="submit"
                     className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-[#8d84e8]/70 bg-[#8d84e8]/15 px-3 text-xs font-semibold uppercase tracking-wide text-[#DCD8FF] hover:bg-[#8d84e8]/20"
                   >
-                    <Mail size={15} />
-                    Send report
+                    <Bug size={15} />
+                    Open issue
                   </button>
                   <button
                     type="button"

@@ -14,7 +14,16 @@ export const keywordRules: DetectionRule[] = [
       /\baccount locked\b/i,
       /\blimited time\b/i,
       /\bexpires today\b/i,
-      /\bwithin 24 hours\b/i
+      /\bwithin 24 hours\b/i,
+      /\baction required\b/i,
+      /\brespond today\b/i,
+      /\bbefore midnight\b/i,
+      /\blast chance\b/i,
+      /\bdeadline\b/i,
+      /\bavoid interruption\b/i,
+      /\baccess will be removed\b/i,
+      /\btime sensitive\b/i,
+      /\bnow required\b/i
     ]
   },
   {
@@ -30,7 +39,18 @@ export const keywordRules: DetectionRule[] = [
       /\bsign in\b/i,
       /\bconfirm your identity\b/i,
       /\bsecurity check\b/i,
-      /\bupdate payment\b/i
+      /\bupdate payment\b/i,
+      /\bverify identity\b/i,
+      /\bre-enter your password\b/i,
+      /\breset your password\b/i,
+      /\baccount verification\b/i,
+      /\bvalidate your account\b/i,
+      /\bconfirm account\b/i,
+      /\bverification code\b/i,
+      /\bone-time code\b/i,
+      /\b2fa code\b/i,
+      /\bmfa code\b/i,
+      /\bsecure mailbox\b/i
     ]
   },
   {
@@ -46,7 +66,16 @@ export const keywordRules: DetectionRule[] = [
       /\bwire transfer\b/i,
       /\bcredit card\b/i,
       /\bbilling\b/i,
-      /\btransaction failed\b/i
+      /\btransaction failed\b/i,
+      /\bpayroll\b/i,
+      /\bdirect deposit\b/i,
+      /\bdeposit failed\b/i,
+      /\boverdue\b/i,
+      /\bpayment declined\b/i,
+      /\boutstanding balance\b/i,
+      /\bupdate bank\b/i,
+      /\bbank information\b/i,
+      /\bcard expired\b/i
     ]
   },
   {
@@ -61,7 +90,15 @@ export const keywordRules: DetectionRule[] = [
       /\bclaim your reward\b/i,
       /\byou have won\b/i,
       /\bverify now\b/i,
-      /\bfailure to respond\b/i
+      /\bfailure to respond\b/i,
+      /\baccount access\b/i,
+      /\bmailbox full\b/i,
+      /\bquota exceeded\b/i,
+      /\bsuspicious sign-in\b/i,
+      /\bnew device\b/i,
+      /\bprevent suspension\b/i,
+      /\brestore access\b/i,
+      /\bconfirm ownership\b/i
     ]
   },
   {
@@ -73,7 +110,12 @@ export const keywordRules: DetectionRule[] = [
       /\bdear user\b/i,
       /\bdear customer\b/i,
       /\bhello account holder\b/i,
-      /\bvalued customer\b/i
+      /\bvalued customer\b/i,
+      /\bdear employee\b/i,
+      /\bdear student\b/i,
+      /\bhello user\b/i,
+      /\baccount holder\b/i,
+      /\bdear member\b/i
     ]
   },
   {
@@ -86,7 +128,15 @@ export const keywordRules: DetectionRule[] = [
       /\bdownload file\b/i,
       /\battached invoice\b/i,
       /\bmacro\b/i,
-      /\benable content\b/i
+      /\benable content\b/i,
+      /\bview attachment\b/i,
+      /\bdownload attachment\b/i,
+      /\bopen document\b/i,
+      /\benable macros\b/i,
+      /\bprotected document\b/i,
+      /\bsecure document\b/i,
+      /\bshared file\b/i,
+      /\bdownload instructions\b/i
     ]
   },
   {
@@ -99,9 +149,31 @@ export const keywordRules: DetectionRule[] = [
       /\bexclusive reward\b/i,
       /\bprize\b/i,
       /\bwinner\b/i,
-      /\bclaim now\b/i
+      /\bclaim now\b/i,
+      /\bselected to receive\b/i,
+      /\bbonus reward\b/i,
+      /\bgift card\b/i,
+      /\bfree iphone\b/i,
+      /\blimited offer\b/i,
+      /\bcongratulations\b/i
     ]
   }
 ];
 
-export const shortenedUrlDomains = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd"];
+export const shortenedUrlDomains = [
+  "bit.ly",
+  "tinyurl.com",
+  "t.co",
+  "goo.gl",
+  "ow.ly",
+  "is.gd",
+  "buff.ly",
+  "cutt.ly",
+  "rebrand.ly",
+  "s.id",
+  "shorturl.at",
+  "tiny.cc",
+  "trib.al",
+  "lnkd.in",
+  "rb.gy"
+];

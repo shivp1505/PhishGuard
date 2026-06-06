@@ -23,7 +23,26 @@ const brandDomains: Record<string, string[]> = {
   docusign: ["docusign.com", "docusign.net"],
   fedex: ["fedex.com"],
   ups: ["ups.com"],
-  rutgers: ["rutgers.edu"]
+  rutgers: ["rutgers.edu"],
+  box: ["box.com"],
+  sharepoint: ["sharepoint.com"],
+  onedrive: ["onedrive.com", "live.com"],
+  webex: ["webex.com"],
+  atlassian: ["atlassian.net"],
+  salesforce: ["salesforce.com"],
+  workday: ["workday.com"],
+  okta: ["okta.com"],
+  duo: ["duo.com"],
+  servicenow: ["servicenow.com"],
+  stripe: ["stripe.com"],
+  venmo: ["venmo.com"],
+  "bank of america": ["bankofamerica.com"],
+  wells: ["wellsfargo.com"],
+  citi: ["citibank.com"],
+  capitalone: ["capitalone.com"],
+  "capital one": ["capitalone.com"],
+  amex: ["americanexpress.com"],
+  "american express": ["americanexpress.com"]
 };
 const executableAttachmentExtensions = ["exe", "scr", "js", "vbs", "bat", "cmd", "iso"];
 const riskyAttachmentExtensions = [

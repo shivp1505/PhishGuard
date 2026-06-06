@@ -3,7 +3,7 @@
 import { AlertTriangle, Check, Copy, FileText, Loader2, ScanLine, ShieldCheck, Trash2 } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import { analyzeMessage } from "@/lib/api";
-import { sampleMessages } from "@/lib/sampleMessages";
+import { scannerSamplePool } from "@/lib/sampleMessages";
 import { saveScanHistory } from "@/lib/scanHistory";
 import { AnalyzeRequest, AnalyzeResponse } from "@/lib/types";
 import { CommandButton } from "./dashboard/CommandButton";
@@ -34,7 +34,7 @@ export function ScannerForm({
   const [copyError, setCopyError] = useState("");
   const [lastReport, setLastReport] = useState("");
   const [copied, setCopied] = useState(false);
-  const [sampleIndex, setSampleIndex] = useState(0);
+  const [lastSampleIndex, setLastSampleIndex] = useState<number | null>(null);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(true);
   const [privacyFading, setPrivacyFading] = useState(false);
@@ -148,9 +148,19 @@ export function ScannerForm({
       return;
     }
 
-    const sample = sampleMessages[sampleIndex];
+    const nextIndex =
+      scannerSamplePool.length <= 1
+        ? 0
+        : (() => {
+            let index = Math.floor(Math.random() * scannerSamplePool.length);
+            if (index === lastSampleIndex) {
+              index = (index + 1) % scannerSamplePool.length;
+            }
+            return index;
+          })();
+    const sample = scannerSamplePool[nextIndex];
     setForm({ ...emptyForm, ...sample.payload });
-    setSampleIndex((current) => (current + 1) % sampleMessages.length);
+    setLastSampleIndex(nextIndex);
     onResult(null);
     setError("");
     setCopyError("");

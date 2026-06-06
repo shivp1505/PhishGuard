@@ -4,6 +4,10 @@ PhishGuard is a cybersecurity awareness web app that analyzes suspicious message
 
 Version 1 uses rule-based detection and local domain intelligence, so it works locally without a paid API key, user accounts, a database, or AI integration.
 
+Live app: https://phishguard.shivpatel.net
+
+Repository: https://github.com/shivp1505/PhishGuard
+
 ## Features
 
 - Message scanner for emails, SMS messages, direct messages, and suspicious links
@@ -19,6 +23,7 @@ Version 1 uses rule-based detection and local domain intelligence, so it works l
 - Sample phishing and low-risk messages
 - Copyable scan report
 - Dedicated report view with copy/export
+- GitHub Issues bug reporting flow
 - Responsive dark cybersecurity dashboard UI
 - Local-first setup with no backend message storage
 - Optional browser-only scan history, disabled by default
@@ -108,6 +113,7 @@ Frontend:
 NEXT_PUBLIC_API_URL=
 INTERNAL_API_URL=http://localhost:5000
 NEXT_PUBLIC_BUG_REPORT_EMAIL=bugs@shivpatel.net
+NEXT_PUBLIC_BUG_REPORT_ISSUE_URL=https://github.com/shivp1505/PhishGuard/issues/new
 ```
 
 Leave `NEXT_PUBLIC_API_URL` blank for normal local or LAN testing. The frontend will call its own `/api/analyze` route, and Next.js will proxy requests to the backend through `INTERNAL_API_URL`.
@@ -217,7 +223,6 @@ Even though nothing is stored in the back end, avoid entering real passwords, So
 
 ## Roadmap
 
-- Replace the mailto bug report flow with a form backend or issue tracker.
 - Add optional PDF export for clean reports.
 - Expand trusted-domain and brand coverage with additional tests.
 - Explore email header analysis for more advanced sender verification.

@@ -8,6 +8,7 @@ import { Badge } from "@/components/Badge";
 import { CommandButton } from "@/components/dashboard/CommandButton";
 import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
 import { formatDomainVerdict } from "@/components/IndicatorCard";
+import { ScoreBreakdown } from "@/components/ScoreBreakdown";
 import { loadReportById, loadSavedReport, saveReport } from "@/lib/reportStorage";
 import { AnalyzeResponse } from "@/lib/types";
 
@@ -54,6 +55,8 @@ export default function ReportPage() {
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState("");
   const reportText = useMemo(() => (result ? formatReport(result) : ""), [result]);
+  const scoringIndicatorCount = result?.indicators.filter((indicator) => indicator.score > 0).length ?? 0;
+  const contextSignalCount = result?.indicators.filter((indicator) => indicator.score === 0).length ?? 0;
 
   useEffect(() => {
     const reportId = new URLSearchParams(window.location.search).get("id");
@@ -151,6 +154,32 @@ export default function ReportPage() {
                 </div>
               </div>
             </DashboardPanel>
+
+            <section className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+              <DashboardPanel className="p-6">
+                <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Assessment snapshot</p>
+                <div className="mt-4 grid gap-3">
+                  {[
+                    ["Confidence", result.confidence],
+                    ["Evidence strength", result.evidenceStrength],
+                    ["Scoring indicators", String(scoringIndicatorCount)],
+                    ["Context signals", String(contextSignalCount)]
+                  ].map(([label, value]) => (
+                    <div key={label} className="flex items-center justify-between gap-3 rounded-lg bg-white/[0.045] p-3 text-sm">
+                      <span className="text-neutral-400">{label}</span>
+                      <span className="font-semibold text-white">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </DashboardPanel>
+
+              <DashboardPanel className="p-6">
+                <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Score details</p>
+                <div className="mt-4">
+                  <ScoreBreakdown result={result} />
+                </div>
+              </DashboardPanel>
+            </section>
 
             <DashboardPanel className="p-6">
               <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Evidence</p>

@@ -90,3 +90,62 @@ export const sampleMessages: SampleMessage[] = [
     }
   }
 ];
+
+export const scannerSamplePool: SampleMessage[] = [
+  ...sampleMessages,
+  {
+    title: "DocuSign Review",
+    description: "Uses a real document-signing brand with a shared-content style request.",
+    risk: "Medium",
+    scenario: "Shared document review",
+    expectedOutcome: "Medium risk: known brand context with action pressure",
+    payload: {
+      sender: "contracts@vendor-updates.example",
+      subject: "Document waiting for review",
+      message:
+        "Please review the attached agreement today. The request expires today and requires your confirmation before the end of business.",
+      url: "https://docusign.net/review/example"
+    }
+  },
+  {
+    title: "Teams Meeting Invite",
+    description: "A low-risk meeting message using a known Microsoft Teams link.",
+    risk: "Low",
+    scenario: "Legitimate meeting context",
+    expectedOutcome: "Low risk: known service link with normal wording",
+    payload: {
+      sender: "alex@company.example",
+      subject: "Teams link for planning call",
+      message:
+        "Hi team, here is the Teams link for tomorrow's planning call. No prep needed, just bring any blockers you want to discuss.",
+      url: "https://teams.microsoft.com/l/meetup-join/example"
+    }
+  },
+  {
+    title: "Shared Google Form",
+    description: "A shared form link with a request for personal information.",
+    risk: "High",
+    scenario: "Hosted form collection",
+    expectedOutcome: "High risk: shared-content link with credential or identity context",
+    payload: {
+      sender: "student-services@campus-update.example",
+      subject: "Student verification form",
+      message:
+        "Hello account holder, complete this verification form within 24 hours to avoid interruption. Confirm your identity and sign in details before access is restricted.",
+      url: "https://forms.gle/example"
+    }
+  },
+  {
+    title: "Payroll Update",
+    description: "Pretends to be HR and pressures the user to update payment details.",
+    risk: "Critical",
+    scenario: "Payroll impersonation",
+    expectedOutcome: "Critical risk: financial pressure, credentials, urgency, and sender mismatch",
+    payload: {
+      sender: "HR Payroll <payroll@company-benefits.example>",
+      subject: "Payroll deposit failed",
+      message:
+        "Dear employee, your payroll deposit failed. Update payment and bank information immediately at http://company-benefits.example/payroll/login or your next payment may be delayed."
+    }
+  }
+];

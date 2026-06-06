@@ -16,6 +16,7 @@ import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
 
 const updateLog = [
+  ["V1.1 production", "Added GitHub issue reporting, randomized scanner samples, expanded signal coverage, and improved report score details."],
   ["June 5, 2026", "Prepared the docs for deployment, tuned the demo library, cleaned up the command center, and refreshed the About section."],
   ["V1 scoring polish", "Added trusted-domain context, sender mismatch checks, link text mismatch checks, writing-quality signals, and low-evidence calibration."],
   ["V1 privacy polish", "Disabled local history by default, removed report contents from URLs, added a clear local data action, and added backend timeout handling."]
@@ -92,7 +93,7 @@ export default function DocsPage() {
             <History className="text-mist" size={20} />
             <h2 className="text-2xl font-semibold">Update Log</h2>
           </div>
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {updateLog.map(([label, value]) => (
               <div key={label} className="rounded-lg bg-white/[0.045] p-4">
                 <p className="text-sm font-semibold text-white">{label}</p>
@@ -213,13 +214,18 @@ export default function DocsPage() {
                 <h2 className="text-2xl font-semibold">Repository</h2>
               </div>
               <p className="mt-3 text-sm leading-7 text-neutral-400">
-                The GitHub link will be added after the project repository is published. Until then, this section avoids sending users to an empty repo page.
+                The source code, setup notes, and project history are available in the public GitHub repository.
               </p>
             </div>
-            <div className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-md border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-semibold text-neutral-500">
+            <a
+              href="https://github.com/shivp1505/PhishGuard"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-[#8d84e8]/35 bg-[#8d84e8]/10 px-4 py-3 text-sm font-semibold text-[#DCD8FF] transition hover:bg-[#8d84e8]/15"
+            >
               <Github size={16} />
-              Repository link pending
-            </div>
+              View repository
+            </a>
           </div>
         </DashboardPanel>
       </main>
