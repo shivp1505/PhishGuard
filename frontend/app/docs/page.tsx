@@ -16,8 +16,8 @@ import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
 
 const updateLog = [
-  ["V1.1 production", "Added GitHub issue reporting, randomized scanner samples, expanded signal coverage, and improved report score details."],
-  ["V1 pre deploy check", "Prepared the docs for deployment, tuned the demo library, cleaned up the command center, and refreshed the About section."],
+  ["V1.1.2 production", "Added in-app bug reporting, personal branding, favicon assets, and concise public status labels."],
+  ["V1.1 production", "Added randomized scanner samples, expanded signal coverage, improved report score details, and Resend email delivery for bug reports."],
   ["V1 scoring polish", "Added trusted-domain context, sender mismatch checks, link text mismatch checks, writing-quality signals, and low-evidence calibration."],
   ["V1 privacy polish", "Disabled local history by default, removed report contents from URLs, added a clear local data action, and added backend timeout handling."]
 ];
@@ -49,6 +49,7 @@ const privacyNotes = [
   "Messages are sent to the backend for analysis, but the backend does not store submissions.",
   "The report page uses browser session storage so a result can be viewed without placing message content in the URL.",
   "Optional scan history is off by default and stays in the user's browser when enabled.",
+  "Bug reports are sent through the backend by email and should not include passwords, codes, or sensitive message content.",
   "Users should not paste passwords, verification codes, Social Security numbers, financial details, or private personal data."
 ];
 

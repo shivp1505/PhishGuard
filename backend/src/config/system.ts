@@ -2,11 +2,11 @@ import { keywordRules, shortenedUrlDomains } from "../data/rules";
 import { protectedBrandDomains, trustedDomains } from "../data/trustedDomains";
 
 export const systemInfo = {
-  backendVersion: "1.1.1",
+  backendVersion: "1.1.2",
   engine: "rule-based-v1",
-  releaseStage: "V1 production",
-  rulesetVersion: "ruleset-2026.06.05-v1.1",
-  uiBuild: "v1.1-production-02",
+  releaseStage: "V1 prod",
+  rulesetVersion: "rsv.1.1",
+  uiBuild: "v1.1-prod3",
   lastUpdated: "2026-06-05",
   metrics: {
     keywordRules: keywordRules.length,

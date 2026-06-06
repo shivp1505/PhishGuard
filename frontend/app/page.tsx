@@ -7,6 +7,7 @@ import {
   MailQuestion,
   UserRoundCheck,
 } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useState } from "react";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { CommandCenterShell } from "@/components/dashboard/CommandCenterShell";
@@ -130,8 +131,22 @@ export default function Home() {
             </DashboardPanel>
           </section>
 
-          <footer className="mx-auto flex w-full max-w-[1800px] flex-col gap-2 px-4 pb-8 text-xs text-neutral-500 sm:px-6 lg:px-6 xl:px-8">
-            <p>Built by Shiv Patel.</p>
+          <footer className="mx-auto flex w-full max-w-[1800px] flex-col gap-3 px-4 pb-8 text-xs text-neutral-500 sm:px-6 lg:px-6 xl:px-8">
+            <a
+              href="https://shivpatel.net"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-fit items-center gap-3 text-neutral-400 transition hover:text-white"
+            >
+              <Image
+                src="/shiv-logo.png"
+                alt="Shiv Patel logo"
+                width={32}
+                height={32}
+                className="size-8 rounded-lg border border-white/10 bg-black object-cover"
+              />
+              <span>Built by Shiv Patel</span>
+            </a>
             <p>Copyright 2026 Shiv Patel. PhishGuard is an educational cybersecurity awareness project.</p>
           </footer>
         </div>
