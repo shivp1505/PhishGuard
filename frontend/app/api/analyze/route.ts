@@ -23,6 +23,19 @@ function copyRateLimitHeaders(response: Response) {
   return headers;
 }
 
+function buildBackendHeaders(request: NextRequest) {
+  const headers = new Headers({
+    "Content-Type": "application/json"
+  });
+  const forwardedFor = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip");
+  const userAgent = request.headers.get("user-agent");
+
+  if (forwardedFor) headers.set("X-Forwarded-For", forwardedFor);
+  if (userAgent) headers.set("User-Agent", userAgent);
+
+  return headers;
+}
+
 async function fetchBackend(input: string, init: RequestInit) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), backendTimeoutMs);
@@ -57,9 +70,7 @@ export async function POST(request: NextRequest) {
   try {
     response = await fetchBackend(`${internalApiUrl}/api/analyze`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: buildBackendHeaders(request),
       body: JSON.stringify(body)
     });
   } catch {

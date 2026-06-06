@@ -25,6 +25,10 @@ function escapeHtml(value: string) {
     .replace(/'/g, "&#39;");
 }
 
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 function formatPlainText({
   summary,
   details,
@@ -58,7 +62,9 @@ router.post("/", async (req, res) => {
   const body = (req.body ?? {}) as BugReportRequest;
   const summary = sanitizeText(body.summary, 120);
   const details = sanitizeText(body.details, 1500);
-  const contact = sanitizeText(body.contact, 180);
+  const rawContact = sanitizeText(body.contact, 180);
+  const contact = rawContact;
+  const replyToEmail = isValidEmail(rawContact) ? rawContact : "";
   const page = sanitizeText(body.page, 300);
   const userAgent = sanitizeText(body.userAgent, 300);
 
@@ -97,7 +103,7 @@ router.post("/", async (req, res) => {
   const { error } = await resend.emails.send({
     from: fromEmail,
     to: [toEmail],
-    replyTo: contact || undefined,
+    replyTo: replyToEmail || undefined,
     subject: `PhishGuard bug: ${summary}`,
     text: plainText,
     html

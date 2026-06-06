@@ -14,6 +14,7 @@ interface ClientWindow {
 export function createRateLimiter(options: RateLimitOptions): RequestHandler<unknown, ErrorResponse> {
   const clients = new Map<string, ClientWindow>();
   let requestsSinceCleanup = 0;
+  const maxTrackedClients = 5000;
 
   function cleanupExpiredWindows(now: number) {
     requestsSinceCleanup += 1;
@@ -22,6 +23,12 @@ export function createRateLimiter(options: RateLimitOptions): RequestHandler<unk
     requestsSinceCleanup = 0;
     for (const [key, value] of clients.entries()) {
       if (value.resetAt <= now) clients.delete(key);
+    }
+
+    while (clients.size > maxTrackedClients) {
+      const oldestKey = clients.keys().next().value;
+      if (!oldestKey) break;
+      clients.delete(oldestKey);
     }
   }
 

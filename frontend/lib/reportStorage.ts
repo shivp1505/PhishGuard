@@ -4,6 +4,8 @@ import { AnalyzeResponse } from "./types";
 
 const reportStorageKey = "phishguard:lastReport";
 const reportIdPrefix = "phishguard:report:";
+const maxStoredReports = 8;
+const maxStoredReportAgeMs = 24 * 60 * 60 * 1000;
 
 function browserSupportsStorage() {
   return typeof window !== "undefined" && typeof window.sessionStorage !== "undefined";
@@ -65,6 +67,35 @@ function parseReportJson(saved: string | null) {
   }
 }
 
+function getStoredReportEntries() {
+  if (typeof window === "undefined" || typeof window.localStorage === "undefined") return [];
+
+  return Object.keys(window.localStorage)
+    .filter((key) => key.startsWith(reportIdPrefix))
+    .map((key) => {
+      const timestamp = Number(key.slice(reportIdPrefix.length).split("-")[0]);
+      return {
+        key,
+        timestamp: Number.isFinite(timestamp) ? timestamp : 0
+      };
+    })
+    .sort((left, right) => right.timestamp - left.timestamp);
+}
+
+function cleanupStoredReports() {
+  if (typeof window === "undefined" || typeof window.localStorage === "undefined") return;
+
+  const now = Date.now();
+  const entries = getStoredReportEntries();
+
+  entries.forEach((entry, index) => {
+    const expired = entry.timestamp > 0 && now - entry.timestamp > maxStoredReportAgeMs;
+    if (expired || index >= maxStoredReports) {
+      window.localStorage.removeItem(entry.key);
+    }
+  });
+}
+
 export function saveReport(result: AnalyzeResponse) {
   if (!browserSupportsStorage()) return;
   window.sessionStorage.setItem(reportStorageKey, JSON.stringify(result));
@@ -73,8 +104,10 @@ export function saveReport(result: AnalyzeResponse) {
 export function saveReportById(result: AnalyzeResponse) {
   if (typeof window === "undefined" || typeof window.localStorage === "undefined") return null;
 
+  cleanupStoredReports();
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   window.localStorage.setItem(`${reportIdPrefix}${id}`, JSON.stringify(result));
+  cleanupStoredReports();
   return id;
 }
 
@@ -82,6 +115,7 @@ export function loadReportById(id: string) {
   if (typeof window === "undefined" || typeof window.localStorage === "undefined") return null;
 
   try {
+    cleanupStoredReports();
     const saved = window.localStorage.getItem(`${reportIdPrefix}${id}`);
     return parseReportJson(saved);
   } catch {

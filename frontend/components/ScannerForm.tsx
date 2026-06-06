@@ -184,10 +184,10 @@ export function ScannerForm({
     <DashboardPanel title="Message Intake">
       {showPrivacyNotice && (
         <div
-          className={`mb-5 overflow-hidden rounded-md border p-4 text-sm leading-6 transition-all duration-700 ${
+          className={`mb-5 rounded-md border p-4 text-sm leading-6 transition-all duration-700 ${
             privacyFading
-              ? "max-h-0 border-transparent p-0 opacity-0"
-              : "max-h-56 border-[#8d84e8]/30 bg-[#8d84e8]/10 text-neutral-200 opacity-100"
+              ? "-translate-y-2 border-transparent opacity-0"
+              : "translate-y-0 border-[#8d84e8]/30 bg-[#8d84e8]/10 text-neutral-200 opacity-100"
           }`}
         >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">

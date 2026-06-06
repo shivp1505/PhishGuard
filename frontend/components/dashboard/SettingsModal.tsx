@@ -113,8 +113,8 @@ export function SettingsModal({
 
   return (
     <div className="fixed inset-0 z-[80] grid place-items-center bg-black/65 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" onKeyDown={handleKeyDown}>
-      <div ref={modalRef} className="w-full max-w-2xl rounded-md border border-white/10 bg-[#0D1114] shadow-[0_24px_80px_rgba(0,0,0,0.65)]">
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+      <div ref={modalRef} className="flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-md border border-white/10 bg-[#0D1114] shadow-[0_24px_80px_rgba(0,0,0,0.65)]">
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 py-4">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#6F7A75]">Command Center</p>
             <h2 className="text-lg font-semibold uppercase tracking-wide">Settings</h2>
@@ -124,7 +124,7 @@ export function SettingsModal({
           </button>
         </div>
 
-        <div className="grid gap-5 p-5">
+        <div className="grid gap-5 overflow-y-auto p-5">
           <div className="rounded-md border border-white/10 bg-[#0A0F12] p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>

@@ -109,4 +109,23 @@ export async function runRouteTests() {
       assert.equal(limited.headers.get("RateLimit-Limit"), "2");
     });
   });
+
+  await test("bug report route validates required fields", async () => {
+    await withServer(async (baseUrl) => {
+      const response = await fetch(`${baseUrl}/api/bug-report`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          summary: "Missing details"
+        })
+      });
+      const body = await response.json();
+
+      assert.equal(response.status, 400);
+      assert.equal(body.success, false);
+      assert.equal(body.message, "Bug summary and details are required.");
+    });
+  });
 }

@@ -34,14 +34,15 @@ type HealthState = {
     shortenedDomains: number;
     trackedSources?: number;
   } | null;
+  checkedAt: string | null;
 };
 
 const navItems = [
   { label: "Scanner", href: "#top", icon: ScanSearch },
   { label: "Reports", href: "/report", icon: FileText },
-  { label: "Docs", href: "/docs", icon: ScrollText },
   { label: "Learn", href: "#learn", icon: BookOpen },
-  { label: "About", href: "#about", icon: Info }
+  { label: "About", href: "#about", icon: Info },
+  { label: "Docs", href: "/docs", icon: ScrollText }
 ];
 
 function useHealth() {
@@ -55,7 +56,8 @@ function useHealth() {
     rulesetVersion: "checking",
     uiBuild: "v1-local",
     lastUpdated: "checking",
-    metrics: null
+    metrics: null,
+    checkedAt: null
   });
 
   useEffect(() => {
@@ -76,7 +78,8 @@ function useHealth() {
           rulesetVersion: data.rulesetVersion ?? "ruleset-unknown",
           uiBuild: data.uiBuild ?? "v1-local",
           lastUpdated: data.lastUpdated ?? "unknown",
-          metrics: data.metrics ?? null
+          metrics: data.metrics ?? null,
+          checkedAt: new Date().toISOString()
         });
       } catch {
         if (active) {
@@ -90,14 +93,19 @@ function useHealth() {
             rulesetVersion: "unknown",
             uiBuild: "v1-local",
             lastUpdated: "unknown",
-            metrics: null
+            metrics: null,
+            checkedAt: new Date().toISOString()
           });
         }
       }
     }
 
     check();
-    const timer = window.setInterval(check, 15000);
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        void check();
+      }
+    }, 45000);
     return () => {
       active = false;
       window.clearInterval(timer);
@@ -132,6 +140,9 @@ export function CommandSidebar({
   const formattedLastScan = lastScanAt
     ? new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(lastScanAt))
     : "No scan yet";
+  const formattedCheckedAt = health.checkedAt
+    ? new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(new Date(health.checkedAt))
+    : "Not checked";
   const totalSignals =
     health.metrics?.trackedSources ??
     (health.metrics
@@ -139,25 +150,42 @@ export function CommandSidebar({
       : null);
 
   useEffect(() => {
+    if (pathname !== "/") {
+      setActiveHref("");
+      return;
+    }
+
     const sections = ["top", "learn", "about"]
       .map((id) => document.getElementById(id))
       .filter((section): section is HTMLElement => Boolean(section));
 
     function updateActiveSection() {
-      const threshold = window.scrollY + 120;
-      const current = sections.reduce((active, section) => (section.offsetTop <= threshold ? section.id : active), "top");
+      const marker = window.scrollY + window.innerHeight * 0.38;
+      const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 12;
+      const current = nearBottom
+        ? sections[sections.length - 1]?.id ?? "top"
+        : sections.reduce((active, section) => (section.offsetTop <= marker ? section.id : active), "top");
       setActiveHref(`#${current}`);
     }
 
     updateActiveSection();
     window.addEventListener("scroll", updateActiveSection, { passive: true });
-    return () => window.removeEventListener("scroll", updateActiveSection);
-  }, []);
+    window.addEventListener("resize", updateActiveSection);
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
+    };
+  }, [pathname]);
 
   function handleNavClick(href: string) {
     onMobileOpenChange(false);
 
     if (!href.startsWith("#")) return;
+
+    if (pathname !== "/") {
+      window.location.href = `/${href}`;
+      return;
+    }
 
     const targetId = href.slice(1);
     setActiveHref(href);
@@ -201,7 +229,7 @@ export function CommandSidebar({
         <nav className="mt-4 grid gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = item.href.startsWith("#") ? item.href === activeHref : pathname === item.href;
+            const isActive = item.href.startsWith("#") ? pathname === "/" && item.href === activeHref : pathname === item.href;
             return (
               <a
                 key={item.label}
@@ -286,6 +314,10 @@ export function CommandSidebar({
                 <div className="flex items-center justify-between gap-3">
                   <dt className="text-[#A8B3AD]">Updated</dt>
                   <dd className="font-mono text-[#F4F7F5]">{health.lastUpdated}</dd>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-[#A8B3AD]">Status Checked</dt>
+                  <dd className="font-mono text-[#F4F7F5]">{formattedCheckedAt}</dd>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <dt className="text-[#A8B3AD]">Last Scan</dt>

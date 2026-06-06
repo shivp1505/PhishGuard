@@ -16,10 +16,10 @@ import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
 
 const updateLog = [
+  ["V1.1.3 polish", "Fixed Command Center section highlighting, strengthened proxy rate-limit handling, improved modal scrolling, and added report cleanup."],
   ["V1.1.2 production", "Added in-app bug reporting, personal branding, favicon assets, and concise public status labels."],
   ["V1.1 production", "Added randomized scanner samples, expanded signal coverage, improved report score details, and Resend email delivery for bug reports."],
-  ["V1 scoring polish", "Added trusted-domain context, sender mismatch checks, link text mismatch checks, writing-quality signals, and low-evidence calibration."],
-  ["V1 privacy polish", "Disabled local history by default, removed report contents from URLs, added a clear local data action, and added backend timeout handling."]
+  ["V1 scoring polish", "Added trusted-domain context, sender mismatch checks, link text mismatch checks, writing-quality signals, and low-evidence calibration."]
 ];
 
 const quickStart = [
