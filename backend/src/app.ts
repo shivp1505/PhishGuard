@@ -4,6 +4,7 @@ import helmet from "helmet";
 import { systemInfo } from "./config/system";
 import { createRateLimiter, RateLimitOptions } from "./middleware/rateLimit";
 import { analyzeRouter } from "./routes/analyze";
+import { bugReportRouter } from "./routes/bugReport";
 
 interface CreateAppOptions {
   frontendUrl?: string;
@@ -57,6 +58,17 @@ export function createApp(options: CreateAppOptions = {}) {
   });
 
   app.use("/api/analyze", createRateLimiter(analyzeRateLimit), analyzeRouter);
+  app.use(
+    "/api/bug-report",
+    createRateLimiter({
+      windowMs: readPositiveNumber(process.env.BUG_REPORT_RATE_LIMIT_WINDOW_MS, 300_000, {
+        min: 60_000,
+        max: 3_600_000
+      }),
+      maxRequests: readPositiveNumber(process.env.BUG_REPORT_RATE_LIMIT_MAX_REQUESTS, 5, { min: 1, max: 100 })
+    }),
+    bugReportRouter
+  );
 
   const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     console.error(error);

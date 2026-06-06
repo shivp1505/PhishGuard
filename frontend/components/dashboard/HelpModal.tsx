@@ -4,8 +4,6 @@ import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "
 import { AlertTriangle, Bug, Check, Clipboard, FileText, Link2, Mail, ShieldCheck, X } from "lucide-react";
 
 const bugReportEmail = process.env.NEXT_PUBLIC_BUG_REPORT_EMAIL ?? "bugs@shivpatel.net";
-const bugReportIssueUrl =
-  process.env.NEXT_PUBLIC_BUG_REPORT_ISSUE_URL ?? "https://github.com/shivp1505/PhishGuard/issues/new";
 
 const helpItems = [
   {
@@ -160,6 +158,9 @@ function BugReportModal({ open, onClose }: { open: boolean; onClose: () => void 
   const [bugDetails, setBugDetails] = useState("");
   const [bugContact, setBugContact] = useState("");
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendStatus, setSendStatus] = useState("");
+  const [sendError, setSendError] = useState("");
 
   const bugReportBody = useMemo(
     () =>
@@ -190,6 +191,9 @@ function BugReportModal({ open, onClose }: { open: boolean; onClose: () => void 
   useEffect(() => {
     if (!open) {
       setCopied(false);
+      setSendStatus("");
+      setSendError("");
+      setSending(false);
     }
   }, [open]);
 
@@ -220,11 +224,42 @@ function BugReportModal({ open, onClose }: { open: boolean; onClose: () => void 
     }
   }
 
-  function submitBugReport(event: FormEvent<HTMLFormElement>) {
+  async function submitBugReport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const title = encodeURIComponent(`Bug: ${bugSummary || "Website issue"}`);
-    const body = encodeURIComponent(bugReportBody);
-    window.open(`${bugReportIssueUrl}?title=${title}&body=${body}`, "_blank", "noopener,noreferrer");
+    setSending(true);
+    setSendStatus("");
+    setSendError("");
+
+    try {
+      const response = await fetch("/api/bug-report", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          summary: bugSummary,
+          details: bugDetails,
+          contact: bugContact,
+          page: window.location.href,
+          userAgent: navigator.userAgent
+        })
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message ?? "Bug report could not be sent.");
+      }
+
+      setSendStatus(data.message ?? "Bug report sent. Thank you for helping improve PhishGuard.");
+      setBugSummary("");
+      setBugDetails("");
+      setBugContact("");
+    } catch (caught) {
+      const message = caught instanceof Error ? caught.message : "Bug report could not be sent.";
+      setSendError(message);
+    } finally {
+      setSending(false);
+    }
   }
 
   async function copyBugReport() {
@@ -295,16 +330,26 @@ function BugReportModal({ open, onClose }: { open: boolean; onClose: () => void 
                   />
                 </label>
                 <p className="text-xs leading-5 text-[#A8B3AD]">
-                  Reports open as a GitHub Issue so they can be tracked publicly. You can also copy the report and email it to{" "}
-                  <span className="font-mono text-[#D7DDD9]">{bugReportEmail}</span>.
+                  Reports are sent to <span className="font-mono text-[#D7DDD9]">{bugReportEmail}</span>. If sending fails, copy the report and email it manually.
                 </p>
+                {sendStatus && (
+                  <p className="rounded-md border border-[#22C55E]/30 bg-[#22C55E]/10 px-3 py-2 text-sm text-green-100">
+                    {sendStatus}
+                  </p>
+                )}
+                {sendError && (
+                  <p className="rounded-md border border-red-400/30 bg-red-400/10 px-3 py-2 text-sm text-red-100">
+                    {sendError}
+                  </p>
+                )}
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="submit"
+                    disabled={sending}
                     className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-[#8d84e8]/70 bg-[#8d84e8]/15 px-3 text-xs font-semibold uppercase tracking-wide text-[#DCD8FF] hover:bg-[#8d84e8]/20"
                   >
-                    <Bug size={15} />
-                    Open issue
+                    <Mail size={15} />
+                    {sending ? "Sending..." : "Send report"}
                   </button>
                   <button
                     type="button"

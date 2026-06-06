@@ -23,7 +23,7 @@ Repository: https://github.com/shivp1505/PhishGuard
 - Sample phishing and low-risk messages
 - Copyable scan report
 - Dedicated report view with copy/export
-- GitHub Issues bug reporting flow
+- In-app bug reporting with Resend email delivery
 - Responsive dark cybersecurity dashboard UI
 - Local-first setup with no backend message storage
 - Optional browser-only scan history, disabled by default
@@ -113,7 +113,6 @@ Frontend:
 NEXT_PUBLIC_API_URL=
 INTERNAL_API_URL=http://localhost:5000
 NEXT_PUBLIC_BUG_REPORT_EMAIL=bugs@shivpatel.net
-NEXT_PUBLIC_BUG_REPORT_ISSUE_URL=https://github.com/shivp1505/PhishGuard/issues/new
 ```
 
 Leave `NEXT_PUBLIC_API_URL` blank for normal local or LAN testing. The frontend will call its own `/api/analyze` route, and Next.js will proxy requests to the backend through `INTERNAL_API_URL`.
@@ -126,9 +125,16 @@ FRONTEND_URL=http://localhost:3000
 RATE_LIMIT_MAX_REQUESTS=60
 RATE_LIMIT_WINDOW_MS=60000
 TRUST_PROXY_HOPS=1
+RESEND_API_KEY=
+BUG_REPORT_TO_EMAIL=bugs@yourdomain.com
+BUG_REPORT_FROM_EMAIL=PhishGuard <onboarding@resend.dev>
+BUG_REPORT_RATE_LIMIT_MAX_REQUESTS=5
+BUG_REPORT_RATE_LIMIT_WINDOW_MS=300000
 ```
 
 For production, set `INTERNAL_API_URL` to the deployed backend URL and set `FRONTEND_URL` on the backend to the deployed frontend URL. If the backend runs behind a proxy such as Render, keep `TRUST_PROXY_HOPS=1` so rate limiting uses the correct client IP.
+
+Bug reports are sent through Resend from the backend. Keep `RESEND_API_KEY` only in the backend hosting environment. For production sending, use a verified sending domain in Resend and set `BUG_REPORT_FROM_EMAIL` to an address on that domain.
 
 ## API
 

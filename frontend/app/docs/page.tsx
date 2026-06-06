@@ -17,7 +17,7 @@ import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
 
 const updateLog = [
   ["V1.1 production", "Added GitHub issue reporting, randomized scanner samples, expanded signal coverage, and improved report score details."],
-  ["June 5, 2026", "Prepared the docs for deployment, tuned the demo library, cleaned up the command center, and refreshed the About section."],
+  ["V1 pre deploy check", "Prepared the docs for deployment, tuned the demo library, cleaned up the command center, and refreshed the About section."],
   ["V1 scoring polish", "Added trusted-domain context, sender mismatch checks, link text mismatch checks, writing-quality signals, and low-evidence calibration."],
   ["V1 privacy polish", "Disabled local history by default, removed report contents from URLs, added a clear local data action, and added backend timeout handling."]
 ];
