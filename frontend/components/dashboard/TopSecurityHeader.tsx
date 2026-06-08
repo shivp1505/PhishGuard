@@ -20,6 +20,9 @@ export function TopSecurityHeader({ collapsed }: { collapsed: boolean }) {
       </div>
 
       <div className="flex items-center gap-3">
+        <div className="hidden rounded-md border border-[#8d84e8]/25 bg-[#8d84e8]/10 px-2.5 py-1 font-mono text-xs text-[#DCD8FF] sm:block">
+          v1.1.5
+        </div>
         <div className="flex items-center gap-2 text-sm text-[#F4F7F5]">
           <ShieldCheck className="text-[#8d84e8]" size={24} />
           Protection Active

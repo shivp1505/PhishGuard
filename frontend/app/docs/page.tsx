@@ -16,10 +16,17 @@ import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
 
 const updateLog = [
+  ["V1.1.5 identity", "Updated PhishGuard product icons, added a visible version badge, refreshed docs guidance, and clarified scoring accuracy expectations."],
   ["V1.1.4 warmup", "Added Render cold-start awareness, longer backend wake checks, clearer System Status states, and production-safe API startup logging."],
   ["V1.1.3 polish", "Fixed Command Center section highlighting, strengthened proxy rate-limit handling, improved modal scrolling, and added report cleanup."],
-  ["V1.1.2 production", "Added in-app bug reporting, personal branding, favicon assets, and concise public status labels."],
-  ["V1.1 production", "Added randomized scanner samples, expanded signal coverage, improved report score details, and Resend email delivery for bug reports."]
+  ["V1.1.2 production", "Added in-app bug reporting, personal branding, favicon assets, and concise public status labels."]
+];
+
+const latestUpdate = [
+  ["Version", "v1.1.5"],
+  ["Backend", "1.1.5"],
+  ["Ruleset", "rsv.1.1"],
+  ["UI Build", "v1.1-prod6"]
 ];
 
 const quickStart = [
@@ -60,10 +67,18 @@ const limitations = [
   "The trusted-domain and brand lists should be expanded carefully so the model does not become too permissive."
 ];
 
+const accuracyNotes = [
+  ["Rule-based by design", "PhishGuard uses transparent rules instead of a black-box model, so users can see which signals influenced the score."],
+  ["Scores are evidence, not certainty", "A low score means the submitted text did not contain enough warning signs. It does not guarantee the message is safe."],
+  ["Context matters", "Known domains, short messages, forwarded text, and missing headers can limit what the scanner can conclude."],
+  ["Best use", "Use the result as a checkpoint before clicking, replying, downloading files, or entering information."]
+];
+
 const developerNotes = [
   ["Frontend", "Next.js app with same-origin routes for scanner and health checks."],
   ["Backend", "Express TypeScript service that runs the scoring engine and exposes GET /health."],
   ["Analyze route", "POST /api/analyze proxies to the backend through INTERNAL_API_URL."],
+  ["Cold starts", "On Render free tier, the backend may need a short wake-up period after inactivity. System Status shows this as Waking."],
   ["Rate limiting", "Backend limits can be tuned with RATE_LIMIT_MAX_REQUESTS, RATE_LIMIT_WINDOW_MS, and TRUST_PROXY_HOPS."],
   ["Deployment path", "Recommended public URL: phishguard.shivpatel.net with frontend and backend hosted separately."]
 ];
@@ -87,6 +102,39 @@ export default function DocsPage() {
           <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-300">
             A clear guide to what PhishGuard checks, how the score is calculated, what data is handled, and what the current Version 1 build can and cannot do.
           </p>
+        </section>
+
+        <section className="mt-8 grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+          <DashboardPanel className="p-5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="text-mist" size={20} />
+              <h2 className="text-2xl font-semibold">Latest Update</h2>
+            </div>
+            <p className="mt-3 text-sm leading-7 text-neutral-400">
+              The current build focuses on product identity, clearer public documentation, and more accurate status messaging for the deployed backend.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {latestUpdate.map(([label, value]) => (
+                <div key={label} className="rounded-lg bg-white/[0.045] p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">{label}</p>
+                  <p className="mt-2 font-mono text-sm text-white">{value}</p>
+                </div>
+              ))}
+            </div>
+          </DashboardPanel>
+
+          <DashboardPanel className="p-5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <Server className="text-mist" size={20} />
+              <h2 className="text-2xl font-semibold">Backend Wake-Up</h2>
+            </div>
+            <p className="mt-3 text-sm leading-7 text-neutral-400">
+              PhishGuard uses a hosted backend for analysis. If the service has been inactive, the first request may take a moment while the server wakes up.
+            </p>
+            <div className="mt-5 rounded-lg border border-[#F59E0B]/25 bg-[#F59E0B]/10 p-4 text-sm leading-6 text-yellow-100">
+              During that warm-up period, System Status should show <span className="font-semibold">Waking</span>. Once the health check responds, it changes to <span className="font-semibold">Operational</span>.
+            </div>
+          </DashboardPanel>
         </section>
 
         <DashboardPanel className="mt-8 p-5 sm:p-6">
@@ -175,6 +223,24 @@ export default function DocsPage() {
             </div>
           </DashboardPanel>
         </section>
+
+        <DashboardPanel className="mt-5 p-5 sm:p-6">
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="text-mist" size={20} />
+            <h2 className="text-2xl font-semibold">How Accurate Is This?</h2>
+          </div>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-neutral-400">
+            PhishGuard is meant to make common phishing evidence easier to understand. It is strongest when a message includes text, links, sender context, or clear action requests.
+          </p>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {accuracyNotes.map(([label, value]) => (
+              <div key={label} className="rounded-lg bg-white/[0.045] p-4">
+                <p className="text-sm font-semibold text-white">{label}</p>
+                <p className="mt-1 text-sm leading-6 text-neutral-400">{value}</p>
+              </div>
+            ))}
+          </div>
+        </DashboardPanel>
 
         <section className="mt-5 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
           <DashboardPanel className="p-5 sm:p-6">
